@@ -32,7 +32,7 @@ class Blockchain(object):
                 }
 
         # Reset the current list of transactions
-        self.current_transactions = 0
+        self.current_transactions = []
 
         self.chain.append(block)
         return block
@@ -79,7 +79,7 @@ class Blockchain(object):
         # We must make sure that the Dictionary is Ordered,
         # or we'll have inconsistent hashes
         block_string = json.dumps(block, sort_keys=True)
-        return hashlib.sha256(block_string).hexdigest()
+        return hashlib.sha256(block_string.encode()).hexdigest()
 
     @staticmethod
     def valid_proof(last_proof, proof):
@@ -98,7 +98,7 @@ class Blockchain(object):
     @property
     def last_block(self):
         # Return the last Block
-        pass
+        return self.chain[-1]
 
 
 # API starts here!
@@ -107,7 +107,7 @@ class Blockchain(object):
 app = Flask(__name__)
 
 # Unique node identifier
-node_identifier = str(uuid4().replace("-", ""))
+node_identifier = str(uuid4()).replace("-", "")
 
 # New Blockchain
 blockchain = Blockchain()
@@ -122,7 +122,7 @@ def mine():
     proof = blockchain.proof_of_work(last_proof)
 
     blockchain.new_transaction(
-            sender=0,
+            sender="0",
             recipient=node_identifier,
             amount=1
             )
